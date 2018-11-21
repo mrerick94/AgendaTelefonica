@@ -14,11 +14,11 @@ import java.util.List;
  */
 public interface TipoContatoDAO {
     
-    void insert(TipoContato tipoContato) throws Exception;
+    Integer insert(TipoContato tipoContato) throws Exception;
     
     TipoContato select(Integer id) throws Exception;
     
-    void update(TipoContato tipoContato) throws Exception;
+    Boolean update(TipoContato tipoContato) throws Exception;
     
     void delete(Integer id) throws Exception;
     

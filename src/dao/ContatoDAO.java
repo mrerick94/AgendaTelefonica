@@ -14,11 +14,11 @@ import java.util.List;
  */
 public interface ContatoDAO {
     
-    void insert(Contato contato) throws Exception;
+    Integer insert(Contato contato) throws Exception;
     
     Contato select(Integer id) throws Exception;
     
-    void update(Contato contato) throws Exception;
+    Boolean update(Contato contato) throws Exception;
     
     void delete(Integer id) throws Exception;
     

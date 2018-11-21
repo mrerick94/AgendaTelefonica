@@ -9,7 +9,7 @@ create table contato (
     datanascimento date not null,
     email varchar(70) not null,
     id_tipocontato int not null,
-    constraint fk_contatotipo foreign key (id_tipocontato) references tipocontato (id)
+    constraint fk_contatotipo foreign key (id_tipocontato) references tipocontato (id) on delete no action
 );
 
 create table tipocontato (

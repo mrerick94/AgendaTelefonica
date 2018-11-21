@@ -14,15 +14,17 @@ import java.util.List;
  */
 public interface TelefoneDAO {
     
-    void insert(Telefone telefone) throws Exception;
+    Integer insert(Telefone telefone) throws Exception;
     
     Telefone select(Integer id) throws Exception;
     
-    void update(Telefone telefone) throws Exception;
+    Boolean update(Telefone telefone) throws Exception;
     
     void delete(Integer id) throws Exception;
     
-    List<Telefone> list(String termo) throws Exception;
+    void deletePorContato(Integer idContato) throws Exception;
+    
+    List<Telefone> listPorContato(Integer idContato) throws Exception;
     
     List<Telefone> listAll() throws Exception;
 }

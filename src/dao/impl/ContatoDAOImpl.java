@@ -8,6 +8,8 @@ package dao.impl;
 import bean.Contato;
 import bean.Telefone;
 import dao.ConnectionFactory;
+import dao.TelefoneDAO;
+import dao.TipoContatoDAO;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,7 +28,7 @@ public class ContatoDAOImpl implements dao.ContatoDAO {
     ResultSet rs;
 
     @Override
-    public void insert(Contato contato) throws Exception {
+    public Integer insert(Contato contato) throws Exception {
         try {
             conn = ConnectionFactory.getConnection();
             ps = conn.prepareStatement("insert into contato (nome, datanascimento, email, id_tipocontato) "
@@ -47,24 +49,85 @@ public class ContatoDAOImpl implements dao.ContatoDAO {
             ps.executeBatch();
         } catch (IOException | ClassNotFoundException | SQLException e) {
             System.out.println("Contato não pôde ser criado" + e);
+            return null;
         } finally {
             ConnectionFactory.close(conn, ps, rs);
         }
+        return contato.getId();
     }
 
     @Override
     public Contato select(Integer id) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Contato contato = new Contato();
+        try {
+            conn = ConnectionFactory.getConnection();
+            ps = conn.prepareStatement("select id, nome, datanascimento, email, id_tipocontato from contato where id=?");
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                TelefoneDAO telDao = new TelefoneDAOImpl();
+                TipoContatoDAO tipoDao = new TipoContatoDAOImpl();
+                contato.setId(rs.getInt("id"));
+                contato.setNome(rs.getString("nome"));
+                contato.setDataNascimento(rs.getDate("datanascimento"));
+                contato.setEmail(rs.getString("email"));
+                contato.setTipoContato(tipoDao.select(rs.getInt("id_tipocontato")));
+                contato.setTelefones(telDao.listPorContato(contato.getId()));
+            } else {
+                return null;
+            }
+        } catch (IOException | ClassNotFoundException | SQLException e) {
+            System.out.println("Erro ao pesquisar contato" + e);
+            return null;
+        } finally {
+            ConnectionFactory.close(conn, ps, rs);
+        }
+        return contato;
     }
 
     @Override
-    public void update(Contato contato) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Boolean update(Contato contato) throws Exception {
+        // Esse metodo não deleta telefones deletados da lista na interface
+        try {
+            conn = ConnectionFactory.getConnection();
+            ps = conn.prepareStatement("update contato set nome=?, datanascimento=?, email=?, id_tipocontato=? where id=?");
+            ps.setString(1, contato.getNome());
+            ps.setDate(2, new java.sql.Date(contato.getDataNascimento().getTime()));
+            ps.setString(3, contato.getEmail());
+            ps.setInt(4, contato.getTipoContato().getId());
+            ps.setInt(5, contato.getId());
+            ps.executeUpdate();
+            for (Telefone telefone : contato.getTelefones()) {
+                TelefoneDAO telDao = new TelefoneDAOImpl();
+                if (telefone.getId() != null) {
+                    telDao.update(telefone);
+                } else {
+                    telDao.insert(telefone);
+                }
+            }
+        } catch (IOException | ClassNotFoundException | SQLException e) {
+            System.out.println("Contato não pôde ser atualizado" + e);
+            return false;
+        } finally {
+            ConnectionFactory.close(conn, ps, rs);
+        }
+        return true;
     }
 
     @Override
     public void delete(Integer id) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            TelefoneDAO telDao = new TelefoneDAOImpl();
+            telDao.deletePorContato(id);
+            conn = ConnectionFactory.getConnection();
+            ps = conn.prepareStatement("delete from contato where id=?");
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (IOException | ClassNotFoundException | SQLException e) {
+            System.out.println("Erro ao deletar contato" + e);
+        } finally {
+            ConnectionFactory.close(conn, ps, rs);
+        }
     }
 
     @Override
