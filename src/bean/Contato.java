@@ -12,7 +12,8 @@ import java.util.List;
  *
  * @author erick
  */
-public class Contato {
+public class Contato implements Comparable {
+
     private Integer id;
     private String nome, email;
     private Date dataNascimento;
@@ -65,5 +66,10 @@ public class Contato {
 
     public void setTipoContato(TipoContato tipoContato) {
         this.tipoContato = tipoContato;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return this.nome.compareTo(((Contato) o).getNome());
     }
 }

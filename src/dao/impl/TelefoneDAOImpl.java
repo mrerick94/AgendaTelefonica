@@ -5,6 +5,7 @@
  */
 package dao.impl;
 
+import bean.Contato;
 import bean.Telefone;
 import dao.ConnectionFactory;
 import dao.ContatoDAO;
@@ -15,6 +16,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -118,8 +120,29 @@ public class TelefoneDAOImpl implements dao.TelefoneDAO {
     }
     
     @Override
-    public List<Telefone> listPorContato(Integer idContato) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Telefone> listPorContato(Contato contato) throws Exception {
+        List<Telefone> telefones = new ArrayList<Telefone>();
+        Telefone telefone;
+        try {
+            conn = ConnectionFactory.getConnection();
+            ps = conn.prepareStatement("select id, ddd, telefone from telefone where id_contato=?");
+            ps.setInt(1, contato.getId());
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                telefone = new Telefone();
+                telefone.setId(rs.getInt("id"));
+                telefone.setDdd(rs.getInt("ddd"));
+                telefone.setTelefone(rs.getString("telefone"));
+                telefone.setContato(contato);
+                telefones.add(telefone);
+            }
+        } catch (IOException | ClassNotFoundException | SQLException e) {
+            System.out.println("Erro ao pesquisar telefones" + e);
+            return null;
+        } finally {
+            ConnectionFactory.close(conn, ps, rs);
+        }
+        return telefones;
     }
 
     @Override

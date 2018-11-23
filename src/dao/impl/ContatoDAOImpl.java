@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -72,7 +73,7 @@ public class ContatoDAOImpl implements dao.ContatoDAO {
                 contato.setDataNascimento(rs.getDate("datanascimento"));
                 contato.setEmail(rs.getString("email"));
                 contato.setTipoContato(tipoDao.select(rs.getInt("id_tipocontato")));
-                contato.setTelefones(telDao.listPorContato(contato.getId()));
+                contato.setTelefones(telDao.listPorContato(contato));
             } else {
                 return null;
             }
@@ -132,12 +133,62 @@ public class ContatoDAOImpl implements dao.ContatoDAO {
 
     @Override
     public List<Contato> list(String termo) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Contato> contatos = new ArrayList<Contato>();
+        Contato contato;
+        try {
+            conn = ConnectionFactory.getConnection();
+            ps = conn.prepareStatement("select id, nome, datanascimento, email, id_tipocontato from contato where nome like ? or email like ?");
+            ps.setString(1, "%" + termo + "%");
+            ps.setString(2, "%" + termo + "%");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                contato = new Contato();
+                TelefoneDAO telDao = new TelefoneDAOImpl();
+                TipoContatoDAO tipoDao = new TipoContatoDAOImpl();
+                contato.setId(rs.getInt("id"));
+                contato.setNome(rs.getString("nome"));
+                contato.setDataNascimento(rs.getDate("datanascimento"));
+                contato.setEmail(rs.getString("email"));
+                contato.setTipoContato(tipoDao.select(rs.getInt("id_tipocontato")));
+                contato.setTelefones(telDao.listPorContato(contato));
+                contatos.add(contato);
+            }
+        } catch (IOException | ClassNotFoundException | SQLException e) {
+            System.out.println("Erro ao pesquisar contatos" + e);
+            return null;
+        } finally {
+            ConnectionFactory.close(conn, ps, rs);
+        }
+        return contatos;
     }
 
     @Override
     public List<Contato> listAll() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Contato> contatos = new ArrayList<Contato>();
+        Contato contato;
+        try {
+            conn = ConnectionFactory.getConnection();
+            ps = conn.prepareStatement("select id, nome, datanascimento, email, id_tipocontato from contato");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                contato = new Contato();
+                TelefoneDAO telDao = new TelefoneDAOImpl();
+                TipoContatoDAO tipoDao = new TipoContatoDAOImpl();
+                contato.setId(rs.getInt("id"));
+                contato.setNome(rs.getString("nome"));
+                contato.setDataNascimento(rs.getDate("datanascimento"));
+                contato.setEmail(rs.getString("email"));
+                contato.setTipoContato(tipoDao.select(rs.getInt("id_tipocontato")));
+                contato.setTelefones(telDao.listPorContato(contato));
+                contatos.add(contato);
+            }
+        } catch (IOException | ClassNotFoundException | SQLException e) {
+            System.out.println("Erro ao pesquisar contatos" + e);
+            return null;
+        } finally {
+            ConnectionFactory.close(conn, ps, rs);
+        }
+        return contatos;
     }
     
 }

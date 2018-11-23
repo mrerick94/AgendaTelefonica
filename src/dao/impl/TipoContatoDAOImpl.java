@@ -7,14 +7,13 @@ package dao.impl;
 
 import bean.TipoContato;
 import dao.ConnectionFactory;
-import dao.ContatoDAO;
-import dao.TelefoneDAO;
 import dao.TipoContatoDAO;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,7 +47,7 @@ public class TipoContatoDAOImpl implements  TipoContatoDAO {
         TipoContato tipo = new TipoContato();
         try {
             conn = ConnectionFactory.getConnection();
-            ps = conn.prepareStatement("select id, nome from telefone where id=?");
+            ps = conn.prepareStatement("select id, nome from tipocontato where id=?");
             ps.setInt(1, id);
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -104,7 +103,25 @@ public class TipoContatoDAOImpl implements  TipoContatoDAO {
 
     @Override
     public List<TipoContato> listAll() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<TipoContato> tipos = new ArrayList<TipoContato>();
+        TipoContato tipo;
+        try {
+            conn = ConnectionFactory.getConnection();
+            ps = conn.prepareStatement("select id, nome from tipocontato");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                tipo = new TipoContato();
+                tipo.setId(rs.getInt("id"));
+                tipo.setNome(rs.getString("nome"));
+                tipos.add(tipo);
+            }
+        } catch (IOException | ClassNotFoundException | SQLException e) {
+            System.out.println("Erro ao pesquisar Tipos de Contato" + e);
+            return null;
+        } finally {
+            ConnectionFactory.close(conn, ps, rs);
+        }
+        return tipos;
     }
     
 }

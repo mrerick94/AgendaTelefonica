@@ -5,6 +5,7 @@
  */
 package dao;
 
+import bean.Contato;
 import bean.Telefone;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public interface TelefoneDAO {
     
     void deletePorContato(Integer idContato) throws Exception;
     
-    List<Telefone> listPorContato(Integer idContato) throws Exception;
+    List<Telefone> listPorContato(Contato contato) throws Exception;
     
     List<Telefone> listAll() throws Exception;
 }
