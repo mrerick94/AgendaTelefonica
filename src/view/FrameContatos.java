@@ -6,10 +6,12 @@
 package view;
 
 import bean.Contato;
+import com.placeholder.PlaceHolder;
 import dao.ContatoDAO;
 import dao.impl.ContatoDAOImpl;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -22,6 +24,7 @@ public class FrameContatos extends javax.swing.JPanel {
     List<Contato> contatos;
     ContatoDAO contatoDao;
     Contato contato;
+    PlaceHolder holder;
 
     /**
      * Creates new form FrameContatos
@@ -33,6 +36,12 @@ public class FrameContatos extends javax.swing.JPanel {
         this.contatoDao = new ContatoDAOImpl();
         initComponents();
         atualizarTabela();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                jTable1.requestFocus();
+            }
+        });
     }
 
     /**
@@ -73,18 +82,18 @@ public class FrameContatos extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
+        holder = new PlaceHolder(jTextField1, "Digite algo para pesquisar");
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jButton9 = new javax.swing.JButton();
 
         jDialog1.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         jDialog1.setAlwaysOnTop(true);
-        jDialog1.setMaximumSize(new java.awt.Dimension(640, 385));
         jDialog1.setMinimumSize(new java.awt.Dimension(640, 385));
         jDialog1.setModal(true);
-        jDialog1.setPreferredSize(new java.awt.Dimension(640, 385));
         jDialog1.setResizable(false);
         jDialog1.setSize(new java.awt.Dimension(640, 385));
         jDialog1.setLocationRelativeTo(null);
@@ -321,9 +330,12 @@ public class FrameContatos extends javax.swing.JPanel {
             }
         });
 
-        jTextField1.setText("Pesquisar...");
-
         jButton2.setText("Alterar");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
 
         jButton3.setText("Ver");
         jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -370,6 +382,14 @@ public class FrameContatos extends javax.swing.JPanel {
             jTable1.getColumnModel().getColumn(3).setPreferredWidth(232);
         }
 
+        jButton9.setText("+ Tipo Contato");
+        jButton9.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        jButton9.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton9MouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout kGradientPanel1Layout = new javax.swing.GroupLayout(kGradientPanel1);
         kGradientPanel1.setLayout(kGradientPanel1Layout);
         kGradientPanel1Layout.setHorizontalGroup(
@@ -383,7 +403,9 @@ public class FrameContatos extends javax.swing.JPanel {
                         .addContainerGap())
                     .addGroup(kGradientPanel1Layout.createSequentialGroup()
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 534, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(170, 170, 170)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton9)
+                        .addGap(85, 85, 85)
                         .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(6, 6, 6)
                         .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -398,7 +420,9 @@ public class FrameContatos extends javax.swing.JPanel {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6)
                 .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -452,6 +476,18 @@ public class FrameContatos extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButton1MouseClicked
 
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        if (jTable1.getSelectedRow() > -1) {
+            FrameAlterarContato alterarContato = new FrameAlterarContato(this.principal, true, contatos.get(jTable1.getSelectedRow()));
+            alterarContato.setVisible(true);
+        }
+    }//GEN-LAST:event_jButton2MouseClicked
+
+    private void jButton9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton9MouseClicked
+        FrameGerenciarTipos tipos = new FrameGerenciarTipos(this.principal, true);
+        tipos.setVisible(true);
+    }//GEN-LAST:event_jButton9MouseClicked
+
     public DefaultTableModel generateTableModel() {
         try {
             this.contatos = contatoDao.listAll();
@@ -500,6 +536,7 @@ public class FrameContatos extends javax.swing.JPanel {
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JComboBox<String> jComboBox1;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JDialog jDialog1;

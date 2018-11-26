@@ -12,10 +12,6 @@ import dao.ContatoDAO;
 import dao.TipoContatoDAO;
 import dao.impl.ContatoDAOImpl;
 import dao.impl.TipoContatoDAOImpl;
-import java.awt.event.MouseListener;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
@@ -24,22 +20,29 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author erick
+ * @author Alunos
  */
-public class FrameNovoContato extends javax.swing.JDialog implements MouseListener {
+public class FrameAlterarContato extends javax.swing.JDialog {
     
     Contato contato;
     List<Telefone> telefones;
 
     /**
-     * Creates new form FrameNovoContato
+     * Creates new form FrameAlterarContato
+     * @param parent
+     * @param modal
+     * @param contato
      */
-    public FrameNovoContato(java.awt.Frame parent, boolean modal) {
+    public FrameAlterarContato(java.awt.Frame parent, boolean modal, Contato contato) {
         super(parent, modal);
-        telefones = new ArrayList<Telefone>();
         initComponents();
+        this.telefones = contato.getTelefones();
+        jTextField2.setText(contato.getNome());
+        jTextField3.setText(contato.getEmail());
+        jDateChooser1.setDate(contato.getDataNascimento());
         atualizarTabela();
         atualizarCbBox();
+        jComboBox1.setSelectedIndex(contato.getTipoContato().getId() - 1);
     }
 
     /**
@@ -82,7 +85,6 @@ public class FrameNovoContato extends javax.swing.JDialog implements MouseListen
         setPreferredSize(new java.awt.Dimension(640, 385));
         setResizable(false);
         setSize(new java.awt.Dimension(640, 385));
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         kGradientPanel2.setkEndColor(new java.awt.Color(204, 204, 255));
         kGradientPanel2.setkGradientFocus(300);
@@ -95,13 +97,12 @@ public class FrameNovoContato extends javax.swing.JDialog implements MouseListen
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Novo Contato");
+        jLabel2.setText("Alterar Contato");
         jPanel2.add(jLabel2);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createMatteBorder(2, 2, 2, 2, new java.awt.Color(153, 153, 255)));
         jPanel3.setMaximumSize(new java.awt.Dimension(616, 290));
         jPanel3.setMinimumSize(new java.awt.Dimension(616, 290));
-        jPanel3.setPreferredSize(new java.awt.Dimension(616, 290));
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jLabel3.setText("Nome:");
@@ -150,10 +151,18 @@ public class FrameNovoContato extends javax.swing.JDialog implements MouseListen
         jScrollPane2.setViewportView(jTable2);
 
         jButton5.setText("Salvar");
-        jButton5.addMouseListener(this);
+        jButton5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton5MouseClicked(evt);
+            }
+        });
 
         jButton6.setText("Cancelar");
-        jButton6.addMouseListener(this);
+        jButton6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton6MouseClicked(evt);
+            }
+        });
 
         jButton7.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton7.setText("+");
@@ -162,14 +171,22 @@ public class FrameNovoContato extends javax.swing.JDialog implements MouseListen
         jButton7.setMaximumSize(new java.awt.Dimension(13, 20));
         jButton7.setMinimumSize(new java.awt.Dimension(13, 20));
         jButton7.setPreferredSize(new java.awt.Dimension(13, 20));
-        jButton7.addMouseListener(this);
+        jButton7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton7MouseClicked(evt);
+            }
+        });
 
         jButton8.setText("-");
         jButton8.setMargin(new java.awt.Insets(1, 1, 1, 1));
         jButton8.setMaximumSize(new java.awt.Dimension(13, 20));
         jButton8.setMinimumSize(new java.awt.Dimension(13, 20));
         jButton8.setPreferredSize(new java.awt.Dimension(13, 20));
-        jButton8.addMouseListener(this);
+        jButton8.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton8MouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -279,47 +296,50 @@ public class FrameNovoContato extends javax.swing.JDialog implements MouseListen
             .addGroup(kGradientPanel2Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        getContentPane().add(kGradientPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 640, 360));
-
-        getAccessibleContext().setAccessibleDescription("");
-        getAccessibleContext().setAccessibleParent(null);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(kGradientPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(kGradientPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 25, Short.MAX_VALUE))
+        );
 
         pack();
         setLocationRelativeTo(null);
-    }
-
-    // Code for dispatching events from components to event handlers.
-
-    public void mouseClicked(java.awt.event.MouseEvent evt) {
-        if (evt.getSource() == jButton5) {
-            FrameNovoContato.this.jButton5MouseClicked(evt);
-        }
-        else if (evt.getSource() == jButton6) {
-            FrameNovoContato.this.jButton6MouseClicked(evt);
-        }
-        else if (evt.getSource() == jButton7) {
-            FrameNovoContato.this.jButton7MouseClicked(evt);
-        }
-        else if (evt.getSource() == jButton8) {
-            FrameNovoContato.this.jButton8MouseClicked(evt);
-        }
-    }
-
-    public void mouseEntered(java.awt.event.MouseEvent evt) {
-    }
-
-    public void mouseExited(java.awt.event.MouseEvent evt) {
-    }
-
-    public void mousePressed(java.awt.event.MouseEvent evt) {
-    }
-
-    public void mouseReleased(java.awt.event.MouseEvent evt) {
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MouseClicked
+        ContatoDAO contatoDao = new ContatoDAOImpl();
+        this.contato = new Contato();
+        contato.setNome(jTextField2.getText());
+        contato.setEmail(jTextField3.getText());
+        contato.setDataNascimento(jDateChooser1.getDate());
+        contato.setTelefones(telefones);
+        contato.setTipoContato((TipoContato) jComboBox1.getSelectedItem());
+        try {
+            contatoDao.update(contato);
+            JOptionPane.showMessageDialog(this, "Contato alterado com sucesso!");
+            ((FrameContatos) ((JFrame) this.getParent()).getContentPane()).atualizarTabela();
+            this.dispose();
+        } catch (Exception e) {
+            System.out.println("Erro ao alterar contato" + e);
+        }
+    }//GEN-LAST:event_jButton5MouseClicked
+
+    private void jButton6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton6MouseClicked
+        this.dispose();
+    }//GEN-LAST:event_jButton6MouseClicked
 
     private void jButton7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton7MouseClicked
         Telefone telefone = new Telefone();
@@ -335,28 +355,6 @@ public class FrameNovoContato extends javax.swing.JDialog implements MouseListen
         telefones.remove(jTable2.getSelectedRow());
         atualizarTabela();
     }//GEN-LAST:event_jButton8MouseClicked
-
-    private void jButton5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MouseClicked
-        ContatoDAO contatoDao = new ContatoDAOImpl();
-        this.contato = new Contato();
-        contato.setNome(jTextField2.getText());
-        contato.setEmail(jTextField3.getText());
-        contato.setDataNascimento(jDateChooser1.getDate());
-        contato.setTelefones(telefones);
-        contato.setTipoContato((TipoContato) jComboBox1.getSelectedItem());
-        try {
-            contatoDao.insert(contato);
-            JOptionPane.showMessageDialog(this, "Contato salvo com sucesso!");
-            ((FrameContatos) ((JFrame) this.getParent()).getContentPane()).atualizarTabela();
-            this.dispose();
-        } catch (Exception e) {
-            System.out.println("Erro ao inserir contato" + e);
-        }
-    }//GEN-LAST:event_jButton5MouseClicked
-
-    private void jButton6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton6MouseClicked
-        this.dispose();
-    }//GEN-LAST:event_jButton6MouseClicked
 
     private void atualizarTabela() {
         jTable2.setModel(generateTableModel());
@@ -393,48 +391,6 @@ public class FrameNovoContato extends javax.swing.JDialog implements MouseListen
             System.out.println("Erro ao consultar Tipos de Contato" + e);
         }
         return null;
-    }
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Windows".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrameNovoContato.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrameNovoContato.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrameNovoContato.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrameNovoContato.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                FrameNovoContato dialog = new FrameNovoContato(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
