@@ -38,7 +38,10 @@ public class ContatoDAOImpl implements dao.ContatoDAO {
             ps.setDate(2, new java.sql.Date(contato.getDataNascimento().getTime()));
             ps.setString(3, contato.getEmail());
             ps.setInt(4, contato.getTipoContato().getId());
-            contato.setId(ps.executeUpdate()); // Executa o insert e seta o id retornado no contato
+            ps.executeUpdate(); // Executa o insert e seta o id retornado no contato
+            rs = ps.getGeneratedKeys();
+            rs.next();
+            contato.setId(rs.getInt(1));
             // Insert telefones do contato
             ps = conn.prepareStatement("insert into telefone (ddd, telefone, id_contato) values (?, ?, ?)");
             for (Telefone telefone : contato.getTelefones()) {

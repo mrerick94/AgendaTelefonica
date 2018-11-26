@@ -46,4 +46,8 @@ public class Telefone {
     public void setContato(Contato contato) {
         this.contato = contato;
     }
+    
+    public String toString() {
+        return "DDD: " + this.ddd + " | " + this.telefone;
+    }
 }

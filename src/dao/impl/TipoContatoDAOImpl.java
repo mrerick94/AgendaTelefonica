@@ -107,7 +107,7 @@ public class TipoContatoDAOImpl implements  TipoContatoDAO {
         TipoContato tipo;
         try {
             conn = ConnectionFactory.getConnection();
-            ps = conn.prepareStatement("select id, nome from tipocontato");
+            ps = conn.prepareStatement("select id, nome from tipocontato order by id");
             rs = ps.executeQuery();
             while (rs.next()) {
                 tipo = new TipoContato();

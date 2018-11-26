@@ -6,33 +6,40 @@
 package view;
 
 import bean.Contato;
+import bean.Telefone;
+import bean.TipoContato;
 import dao.ContatoDAO;
+import dao.TipoContatoDAO;
 import dao.impl.ContatoDAOImpl;
+import dao.impl.TipoContatoDAOImpl;
+import java.awt.event.MouseListener;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author Alunos
+ * @author erick
  */
-public class FrameContatos extends javax.swing.JPanel {
-
-    FramePrincipal principal;
-    List<Contato> contatos;
-    ContatoDAO contatoDao;
+public class FrameNovoContato extends javax.swing.JDialog implements MouseListener {
+    
     Contato contato;
+    List<Telefone> telefones;
 
     /**
-     * Creates new form FrameContatos
-     *
-     * @param principal
+     * Creates new form FrameNovoContato
      */
-    public FrameContatos(FramePrincipal principal) {
-        this.principal = principal;
-        this.contatoDao = new ContatoDAOImpl();
+    public FrameNovoContato(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
+        telefones = new ArrayList<Telefone>();
         initComponents();
         atualizarTabela();
+        atualizarCbBox();
     }
 
     /**
@@ -44,7 +51,6 @@ public class FrameContatos extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jDialog1 = new javax.swing.JDialog();
         kGradientPanel2 = new keeptoo.KGradientPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -68,34 +74,21 @@ public class FrameContatos extends javax.swing.JPanel {
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
-        kGradientPanel1 = new keeptoo.KGradientPanel();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
 
-        jDialog1.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        jDialog1.setAlwaysOnTop(true);
-        jDialog1.setMaximumSize(new java.awt.Dimension(640, 385));
-        jDialog1.setMinimumSize(new java.awt.Dimension(640, 385));
-        jDialog1.setModal(true);
-        jDialog1.setPreferredSize(new java.awt.Dimension(640, 385));
-        jDialog1.setResizable(false);
-        jDialog1.setSize(new java.awt.Dimension(640, 385));
-        jDialog1.setLocationRelativeTo(null);
-        jDialog1.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setMaximumSize(new java.awt.Dimension(640, 385));
+        setMinimumSize(new java.awt.Dimension(640, 385));
+        setModal(true);
+        setPreferredSize(new java.awt.Dimension(640, 385));
+        setResizable(false);
+        setSize(new java.awt.Dimension(640, 385));
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         kGradientPanel2.setkEndColor(new java.awt.Color(204, 204, 255));
         kGradientPanel2.setkGradientFocus(300);
         kGradientPanel2.setkStartColor(new java.awt.Color(102, 102, 255));
         kGradientPanel2.setMaximumSize(new java.awt.Dimension(640, 360));
         kGradientPanel2.setMinimumSize(new java.awt.Dimension(640, 360));
-        kGradientPanel2.setPreferredSize(new java.awt.Dimension(640, 360));
 
         jPanel2.setBackground(new java.awt.Color(204, 255, 255, 100));
         jPanel2.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(153, 153, 255)));
@@ -136,6 +129,8 @@ public class FrameContatos extends javax.swing.JPanel {
         jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jLabel9.setText("Telefone:");
 
+        jTextField5.setToolTipText("Formato: NNNNN-NNNN");
+
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -155,8 +150,10 @@ public class FrameContatos extends javax.swing.JPanel {
         jScrollPane2.setViewportView(jTable2);
 
         jButton5.setText("Salvar");
+        jButton5.addMouseListener(this);
 
         jButton6.setText("Cancelar");
+        jButton6.addMouseListener(this);
 
         jButton7.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton7.setText("+");
@@ -165,12 +162,14 @@ public class FrameContatos extends javax.swing.JPanel {
         jButton7.setMaximumSize(new java.awt.Dimension(13, 20));
         jButton7.setMinimumSize(new java.awt.Dimension(13, 20));
         jButton7.setPreferredSize(new java.awt.Dimension(13, 20));
+        jButton7.addMouseListener(this);
 
         jButton8.setText("-");
         jButton8.setMargin(new java.awt.Insets(1, 1, 1, 1));
         jButton8.setMaximumSize(new java.awt.Dimension(13, 20));
         jButton8.setMinimumSize(new java.awt.Dimension(13, 20));
         jButton8.setPreferredSize(new java.awt.Dimension(13, 20));
+        jButton8.addMouseListener(this);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -284,226 +283,167 @@ public class FrameContatos extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        jDialog1.getContentPane().add(kGradientPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 640, 360));
+        getContentPane().add(kGradientPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 640, 360));
 
-        setMinimumSize(new java.awt.Dimension(1000, 627));
+        getAccessibleContext().setAccessibleDescription("");
+        getAccessibleContext().setAccessibleParent(null);
 
-        kGradientPanel1.setkEndColor(new java.awt.Color(204, 204, 255));
-        kGradientPanel1.setkGradientFocus(200);
-        kGradientPanel1.setkStartColor(new java.awt.Color(102, 102, 255));
+        pack();
+        setLocationRelativeTo(null);
+    }
 
-        jPanel1.setBackground(new java.awt.Color(204, 255, 255, 100));
+    // Code for dispatching events from components to event handlers.
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel1.setText("Agenda Telefônica");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(637, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(24, Short.MAX_VALUE))
-        );
-
-        jButton1.setText("Excluir");
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton1MouseClicked(evt);
-            }
-        });
-
-        jTextField1.setText("Pesquisar...");
-
-        jButton2.setText("Alterar");
-
-        jButton3.setText("Ver");
-        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton3MouseClicked(evt);
-            }
-        });
-
-        jButton4.setText("Novo");
-        jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton4MouseClicked(evt);
-            }
-        });
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jTable1.setIntercellSpacing(new java.awt.Dimension(2, 1));
-        jTable1.setShowHorizontalLines(false);
-        jTable1.getTableHeader().setReorderingAllowed(false);
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setResizable(false);
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(98);
-            jTable1.getColumnModel().getColumn(1).setResizable(false);
-            jTable1.getColumnModel().getColumn(1).setPreferredWidth(500);
-            jTable1.getColumnModel().getColumn(2).setResizable(false);
-            jTable1.getColumnModel().getColumn(2).setPreferredWidth(150);
-            jTable1.getColumnModel().getColumn(3).setResizable(false);
-            jTable1.getColumnModel().getColumn(3).setPreferredWidth(232);
+    public void mouseClicked(java.awt.event.MouseEvent evt) {
+        if (evt.getSource() == jButton7) {
+            FrameNovoContato.this.jButton7MouseClicked(evt);
         }
+        else if (evt.getSource() == jButton8) {
+            FrameNovoContato.this.jButton8MouseClicked(evt);
+        }
+        else if (evt.getSource() == jButton5) {
+            FrameNovoContato.this.jButton5MouseClicked(evt);
+        }
+        else if (evt.getSource() == jButton6) {
+            FrameNovoContato.this.jButton6MouseClicked(evt);
+        }
+    }
 
-        javax.swing.GroupLayout kGradientPanel1Layout = new javax.swing.GroupLayout(kGradientPanel1);
-        kGradientPanel1.setLayout(kGradientPanel1Layout);
-        kGradientPanel1Layout.setHorizontalGroup(
-            kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(kGradientPanel1Layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(kGradientPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1)
-                        .addContainerGap())
-                    .addGroup(kGradientPanel1Layout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 534, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(170, 170, 170)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(6, 6, 6)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(6, 6, 6)
-                        .addComponent(jButton2)
-                        .addGap(6, 6, 6)
-                        .addComponent(jButton1))))
-        );
-        kGradientPanel1Layout.setVerticalGroup(
-            kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(kGradientPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(6, 6, 6)
-                .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 501, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+    public void mouseEntered(java.awt.event.MouseEvent evt) {
+    }
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(kGradientPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(kGradientPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+    public void mouseExited(java.awt.event.MouseEvent evt) {
+    }
+
+    public void mousePressed(java.awt.event.MouseEvent evt) {
+    }
+
+    public void mouseReleased(java.awt.event.MouseEvent evt) {
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
-        FrameNovoContato novoContato = new FrameNovoContato(this.principal, true);
-        novoContato.setVisible(true);
-    }//GEN-LAST:event_jButton4MouseClicked
+    private void jButton7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton7MouseClicked
+        Telefone telefone = new Telefone();
+        telefone.setDdd(Integer.valueOf(jTextField4.getText()));
+        telefone.setTelefone(jTextField5.getText());
+        jTextField4.setText("");
+        jTextField5.setText("");
+        telefones.add(telefone);
+        atualizarTabela();
+    }//GEN-LAST:event_jButton7MouseClicked
 
-    private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
-        if (jTable1.getSelectedRow() > -1) {
-            FrameVerContato verContato = new FrameVerContato(this.principal, true, contatos.get(jTable1.getSelectedRow()));
-            verContato.setVisible(true);
-        } else {
-            JOptionPane.showMessageDialog(this, "Nenhum contato selecionado");
-        }
-    }//GEN-LAST:event_jButton3MouseClicked
+    private void jButton8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton8MouseClicked
+        telefones.remove(jTable2.getSelectedRow());
+        atualizarTabela();
+    }//GEN-LAST:event_jButton8MouseClicked
 
-    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        if (jTable1.getSelectedRow() > -1) {
-            int confirmacao = JOptionPane.showConfirmDialog(this, "Deletar contato: " + contatos.get(jTable1.getSelectedRow()).getNome() + "?");
-            if (confirmacao == 0) {
-                try {
-                    ContatoDAO contatoDao = new ContatoDAOImpl();
-                    contatoDao.delete(contatos.get(jTable1.getSelectedRow()).getId());
-                    JOptionPane.showMessageDialog(this, "Contato deletado!");
-                    atualizarTabela();
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(this, "Erro ao deletar contato");
-                }
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Nenhum contato selecionado");
-        }
-    }//GEN-LAST:event_jButton1MouseClicked
-
-    public DefaultTableModel generateTableModel() {
+    private void jButton5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MouseClicked
+        ContatoDAO contatoDao = new ContatoDAOImpl();
+        this.contato = new Contato();
+        contato.setNome(jTextField2.getText());
+        contato.setEmail(jTextField3.getText());
+        contato.setDataNascimento(jDateChooser1.getDate());
+        contato.setTelefones(telefones);
+        contato.setTipoContato((TipoContato) jComboBox1.getSelectedItem());
         try {
-            this.contatos = contatoDao.listAll();
+            contatoDao.insert(contato);
+            JOptionPane.showMessageDialog(this, "Contato salvo com sucesso!");
+            ((FrameContatos) ((JFrame) this.getParent()).getContentPane()).atualizarTabela();
+            this.dispose();
         } catch (Exception e) {
-            System.out.println("Erro ao gerar modelo de tabela" + e);
+            System.out.println("Erro ao inserir contato" + e);
         }
-        String[] barraTitulo = {"Código", "Nome", "Telefone 1", "E-mail"};
-        Object[][] tableValues = new Object[this.contatos.size()][4];
+    }//GEN-LAST:event_jButton5MouseClicked
+
+    private void jButton6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton6MouseClicked
+        this.dispose();
+    }//GEN-LAST:event_jButton6MouseClicked
+
+    private void atualizarTabela() {
+        jTable2.setModel(generateTableModel());
+    }
+    
+    private DefaultTableModel generateTableModel() {
+        String[] barraTitulo = {"DDD", "Telefone"};
+        Object[][] tableValues = new Object[this.telefones.size()][2];
         int i = 0;
-        for (Contato contato : this.contatos) {
-            tableValues[i][0] = contato.getId();
-            tableValues[i][1] = contato.getNome();
-            if (contato.getTelefones().size() > 0) {
-                tableValues[i][2] = contato.getTelefones().get(0).getTelefone();
-            }
-            tableValues[i][3] = contato.getEmail();
+        for (Telefone telefone : this.telefones) {
+            tableValues[i][0] = telefone.getDdd();
+            tableValues[i][1] = telefone.getTelefone();
             i++;
         }
         return new DefaultTableModel(tableValues, barraTitulo);
     }
-
-    public void atualizarTabela() {
-        jTable1.setModel(generateTableModel());
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setMinWidth(98);
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(98);
-            jTable1.getColumnModel().getColumn(0).setMaxWidth(98);
-            jTable1.getColumnModel().getColumn(1).setMinWidth(500);
-            jTable1.getColumnModel().getColumn(1).setPreferredWidth(500);
-            jTable1.getColumnModel().getColumn(1).setMaxWidth(500);
-            jTable1.getColumnModel().getColumn(2).setMinWidth(150);
-            jTable1.getColumnModel().getColumn(2).setPreferredWidth(150);
-            jTable1.getColumnModel().getColumn(2).setMaxWidth(150);
-            jTable1.getColumnModel().getColumn(3).setMinWidth(232);
-            jTable1.getColumnModel().getColumn(3).setPreferredWidth(232);
-            jTable1.getColumnModel().getColumn(3).setMaxWidth(232);
+    
+    private void atualizarCbBox() {
+        jComboBox1.setModel(generateCbModel());
+    }
+    
+    private DefaultComboBoxModel generateCbModel() {
+        try {
+            TipoContatoDAO tipoDao = new TipoContatoDAOImpl();
+            List<TipoContato> tiposList = tipoDao.listAll();
+            Object[] tipos = new Object[tiposList.size()];
+            int i = 0;
+            for (TipoContato tipo : tiposList) {
+                tipos[i] = tipo;
+                i++;
+            }
+            return new DefaultComboBoxModel(tipos);
+        } catch (Exception e) {
+            System.out.println("Erro ao consultar Tipos de Contato" + e);
         }
+        return null;
+    }
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Windows".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(FrameNovoContato.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(FrameNovoContato.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(FrameNovoContato.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(FrameNovoContato.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the dialog */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                FrameNovoContato dialog = new FrameNovoContato(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JComboBox<String> jComboBox1;
     private com.toedter.calendar.JDateChooser jDateChooser1;
-    private javax.swing.JDialog jDialog1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -512,19 +452,14 @@ public class FrameContatos extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;
-    private keeptoo.KGradientPanel kGradientPanel1;
     private keeptoo.KGradientPanel kGradientPanel2;
     // End of variables declaration//GEN-END:variables
 }

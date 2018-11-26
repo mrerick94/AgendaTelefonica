@@ -20,7 +20,7 @@ public class ConnectionFactory {
 
     public static Connection getConnection() throws SQLException, ClassNotFoundException, IOException {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        return DriverManager.getConnection("jdbc:mysql://localhost:3306/agendatelefonica?useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false", "root", "");
+        return DriverManager.getConnection("jdbc:mysql://localhost:3306/agendatelefonica?useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false", "root", "root");
     }
 
     public static void close(Connection conn, Statement stmt, ResultSet rs) {

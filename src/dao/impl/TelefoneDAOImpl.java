@@ -9,8 +9,6 @@ import bean.Contato;
 import bean.Telefone;
 import dao.ConnectionFactory;
 import dao.ContatoDAO;
-import dao.TelefoneDAO;
-import dao.TipoContatoDAO;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
