@@ -6,6 +6,7 @@
 package dao;
 
 import bean.TipoContato;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 /**
@@ -20,7 +21,7 @@ public interface TipoContatoDAO {
     
     Boolean update(TipoContato tipoContato) throws Exception;
     
-    void delete(Integer id) throws Exception;
+    void delete(Integer id) throws SQLIntegrityConstraintViolationException;
     
     List<TipoContato> list(String termo) throws Exception;
     

@@ -23,7 +23,7 @@ import java.util.List;
  * @author erick
  */
 public class ContatoDAOImpl implements dao.ContatoDAO {
-    
+
     Connection conn;
     PreparedStatement ps;
     ResultSet rs;
@@ -101,8 +101,9 @@ public class ContatoDAOImpl implements dao.ContatoDAO {
             ps.setInt(4, contato.getTipoContato().getId());
             ps.setInt(5, contato.getId());
             ps.executeUpdate();
+            TelefoneDAO telDao = new TelefoneDAOImpl();
+            telDao.deletePorContato(contato.getId());
             for (Telefone telefone : contato.getTelefones()) {
-                TelefoneDAO telDao = new TelefoneDAOImpl();
                 if (telefone.getId() != null) {
                     telDao.update(telefone);
                 } else {
@@ -193,5 +194,5 @@ public class ContatoDAOImpl implements dao.ContatoDAO {
         }
         return contatos;
     }
-    
+
 }

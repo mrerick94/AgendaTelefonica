@@ -36,6 +36,7 @@ public class FrameAlterarContato extends javax.swing.JDialog {
     public FrameAlterarContato(java.awt.Frame parent, boolean modal, Contato contato) {
         super(parent, modal);
         initComponents();
+        this.contato = contato;
         this.telefones = contato.getTelefones();
         jTextField2.setText(contato.getNome());
         jTextField3.setText(contato.getEmail());
@@ -82,7 +83,6 @@ public class FrameAlterarContato extends javax.swing.JDialog {
         setMaximumSize(new java.awt.Dimension(640, 385));
         setMinimumSize(new java.awt.Dimension(640, 385));
         setModal(true);
-        setPreferredSize(new java.awt.Dimension(640, 385));
         setResizable(false);
         setSize(new java.awt.Dimension(640, 385));
 
@@ -321,7 +321,6 @@ public class FrameAlterarContato extends javax.swing.JDialog {
 
     private void jButton5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MouseClicked
         ContatoDAO contatoDao = new ContatoDAOImpl();
-        this.contato = new Contato();
         contato.setNome(jTextField2.getText());
         contato.setEmail(jTextField3.getText());
         contato.setDataNascimento(jDateChooser1.getDate());
@@ -345,6 +344,7 @@ public class FrameAlterarContato extends javax.swing.JDialog {
         Telefone telefone = new Telefone();
         telefone.setDdd(Integer.valueOf(jTextField4.getText()));
         telefone.setTelefone(jTextField5.getText());
+        telefone.setContato(contato);
         jTextField4.setText("");
         jTextField5.setText("");
         telefones.add(telefone);

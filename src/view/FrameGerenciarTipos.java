@@ -9,7 +9,9 @@ import bean.Telefone;
 import bean.TipoContato;
 import dao.TipoContatoDAO;
 import dao.impl.TipoContatoDAOImpl;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -81,19 +83,29 @@ public class FrameGerenciarTipos extends javax.swing.JDialog {
         );
 
         jButton1.setText("+");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
 
         jButton2.setText("-");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Title 1"
+                "Title 1", "null"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false
+                false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -103,12 +115,17 @@ public class FrameGerenciarTipos extends javax.swing.JDialog {
         jScrollPane1.setViewportView(jTable1);
 
         jButton3.setText("Ok");
+        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton3MouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout kGradientPanel1Layout = new javax.swing.GroupLayout(kGradientPanel1);
         kGradientPanel1.setLayout(kGradientPanel1Layout);
         kGradientPanel1Layout.setHorizontalGroup(
             kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 277, Short.MAX_VALUE)
             .addGroup(kGradientPanel1Layout.createSequentialGroup()
                 .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, kGradientPanel1Layout.createSequentialGroup()
@@ -157,24 +174,67 @@ public class FrameGerenciarTipos extends javax.swing.JDialog {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        if (jTextField1.getText().length() > 0) {
+            TipoContatoDAO tipoDao = new TipoContatoDAOImpl();
+            TipoContato tipo = new TipoContato();
+            tipo.setNome(jTextField1.getText());
+            try {
+                tipo.setId(tipoDao.insert(tipo));
+                tipos.add(tipo);
+                jTextField1.setText("");
+                atualizarTabela();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Não foi possivel criar Tipo de Contato");
+                System.out.println(e.getMessage());
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Preencha o campo do nome do Tipo de Contato");
+        }
+    }//GEN-LAST:event_jButton1MouseClicked
+
+    private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
+        this.dispose();
+    }//GEN-LAST:event_jButton3MouseClicked
+
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        try {
+            Integer confirm = JOptionPane.showConfirmDialog(this, "Deletar Tipo: " + tipos.get(jTable1.getSelectedRow()));
+            if (confirm.equals(0)) {
+                TipoContatoDAO tipoDao = new TipoContatoDAOImpl();
+                tipoDao.delete(tipos.get(jTable1.getSelectedRow()).getId());
+                JOptionPane.showMessageDialog(this, "Tipo de Contato deletado!");
+                atualizarTabela();
+            }
+        } catch (SQLIntegrityConstraintViolationException e) {
+            JOptionPane.showMessageDialog(this, "Não foi possivel deletar Tipo de Contato: " + tipos.get(jTable1.getSelectedRow()) + "."
+                + "\nEste Tipo de Contato está sendo usado por um ou mais contatos.");
+            System.out.println(e.getMessage());
+        }
+    }//GEN-LAST:event_jButton2MouseClicked
 
     private void atualizarTabela() {
         jTable1.setModel(generateTableModel());
     }
     
     private DefaultTableModel generateTableModel() {
-        String[] barraTitulo = {"Tipo de Contato"};
+        String[] barraTitulo = {"Código", "Tipo de Contato"};
         try {
             TipoContatoDAO tipoDao = new TipoContatoDAOImpl();
             tipos = tipoDao.listAll();
         } catch (Exception e) {
             System.out.println("Erro ao pesquisar tipos de contato" + e);
         }
-        Object[][] tableValues = new Object[this.tipos.size()][1];
+        Object[][] tableValues = new Object[this.tipos.size()][2];
         int i = 0;
         for (TipoContato tipo : this.tipos) {
-            tableValues[i][0] = tipo.getNome();
+            if (tipo.getId() != null) {
+                tableValues[i][0] = tipo.getId();
+            }
+            tableValues[i][1] = tipo.getNome();
             i++;
         }
         return new DefaultTableModel(tableValues, barraTitulo);

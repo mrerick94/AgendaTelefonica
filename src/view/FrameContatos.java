@@ -330,6 +330,12 @@ public class FrameContatos extends javax.swing.JPanel {
             }
         });
 
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField1KeyTyped(evt);
+            }
+        });
+
         jButton2.setText("Alterar");
         jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -480,6 +486,8 @@ public class FrameContatos extends javax.swing.JPanel {
         if (jTable1.getSelectedRow() > -1) {
             FrameAlterarContato alterarContato = new FrameAlterarContato(this.principal, true, contatos.get(jTable1.getSelectedRow()));
             alterarContato.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Nenhum contato selecionado.");
         }
     }//GEN-LAST:event_jButton2MouseClicked
 
@@ -487,6 +495,14 @@ public class FrameContatos extends javax.swing.JPanel {
         FrameGerenciarTipos tipos = new FrameGerenciarTipos(this.principal, true);
         tipos.setVisible(true);
     }//GEN-LAST:event_jButton9MouseClicked
+
+    private void jTextField1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyTyped
+        if (jTextField1.getText().length() >= 2) {
+            atualizarTabela(jTextField1.getText());
+        } else {
+            atualizarTabela();
+        }
+    }//GEN-LAST:event_jTextField1KeyTyped
 
     public DefaultTableModel generateTableModel() {
         try {
@@ -501,7 +517,28 @@ public class FrameContatos extends javax.swing.JPanel {
             tableValues[i][0] = contato.getId();
             tableValues[i][1] = contato.getNome();
             if (contato.getTelefones().size() > 0) {
-                tableValues[i][2] = contato.getTelefones().get(0).getTelefone();
+                tableValues[i][2] = "(" + contato.getTelefones().get(0).getDdd() + ") " + contato.getTelefones().get(0).getTelefone();
+            }
+            tableValues[i][3] = contato.getEmail();
+            i++;
+        }
+        return new DefaultTableModel(tableValues, barraTitulo);
+    }
+    
+    public DefaultTableModel generateTableModel(String termo) {
+        try {
+            this.contatos = contatoDao.list(termo);
+        } catch (Exception e) {
+            System.out.println("Erro ao gerar modelo de tabela" + e);
+        }
+        String[] barraTitulo = {"Código", "Nome", "Telefone 1", "E-mail"};
+        Object[][] tableValues = new Object[this.contatos.size()][4];
+        int i = 0;
+        for (Contato contato : this.contatos) {
+            tableValues[i][0] = contato.getId();
+            tableValues[i][1] = contato.getNome();
+            if (contato.getTelefones().size() > 0) {
+                tableValues[i][2] = "(" + contato.getTelefones().get(0).getDdd() + ") " + contato.getTelefones().get(0).getTelefone();
             }
             tableValues[i][3] = contato.getEmail();
             i++;
@@ -511,6 +548,24 @@ public class FrameContatos extends javax.swing.JPanel {
 
     public void atualizarTabela() {
         jTable1.setModel(generateTableModel());
+        if (jTable1.getColumnModel().getColumnCount() > 0) {
+            jTable1.getColumnModel().getColumn(0).setMinWidth(98);
+            jTable1.getColumnModel().getColumn(0).setPreferredWidth(98);
+            jTable1.getColumnModel().getColumn(0).setMaxWidth(98);
+            jTable1.getColumnModel().getColumn(1).setMinWidth(500);
+            jTable1.getColumnModel().getColumn(1).setPreferredWidth(500);
+            jTable1.getColumnModel().getColumn(1).setMaxWidth(500);
+            jTable1.getColumnModel().getColumn(2).setMinWidth(150);
+            jTable1.getColumnModel().getColumn(2).setPreferredWidth(150);
+            jTable1.getColumnModel().getColumn(2).setMaxWidth(150);
+            jTable1.getColumnModel().getColumn(3).setMinWidth(232);
+            jTable1.getColumnModel().getColumn(3).setPreferredWidth(232);
+            jTable1.getColumnModel().getColumn(3).setMaxWidth(232);
+        }
+    }
+    
+    public void atualizarTabela(String termo) {
+        jTable1.setModel(generateTableModel(termo));
         if (jTable1.getColumnModel().getColumnCount() > 0) {
             jTable1.getColumnModel().getColumn(0).setMinWidth(98);
             jTable1.getColumnModel().getColumn(0).setPreferredWidth(98);

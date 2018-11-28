@@ -35,7 +35,10 @@ public class TelefoneDAOImpl implements dao.TelefoneDAO {
             ps.setInt(1, telefone.getDdd());
             ps.setString(2, telefone.getTelefone());
             ps.setInt(3, telefone.getContato().getId());
-            telefone.setId(ps.executeUpdate());
+            ps.executeUpdate();
+            rs = ps.getGeneratedKeys();
+            rs.next();
+            telefone.setId(rs.getInt(1));
         } catch (IOException | ClassNotFoundException | SQLException e) {
             System.out.println("Telefone não pôde ser criado" + e);
             return null;

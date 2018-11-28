@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +33,10 @@ public class TipoContatoDAOImpl implements  TipoContatoDAO {
             conn = ConnectionFactory.getConnection();
             ps = conn.prepareStatement("insert into tipocontato (nome) values (?)", PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setString(1, tipoContato.getNome());
-            tipoContato.setId(ps.executeUpdate());
+            ps.executeUpdate();
+            rs = ps.getGeneratedKeys();
+            rs.next();
+            tipoContato.setId(rs.getInt(1));
         } catch (IOException | ClassNotFoundException | SQLException e) {
             System.out.println("TipoContato não pôde ser criado" + e);
             return null;
@@ -83,14 +87,17 @@ public class TipoContatoDAOImpl implements  TipoContatoDAO {
     }
 
     @Override
-    public void delete(Integer id) throws Exception {
+    public void delete(Integer id) throws SQLIntegrityConstraintViolationException {
         try {
             conn = ConnectionFactory.getConnection();
-            ps = conn.prepareStatement("delete from tipocontato where id=?");
+            ps = conn.prepareStatement("delete from tipocontato where id=?", PreparedStatement.EXECUTE_FAILED);
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (IOException | ClassNotFoundException | SQLException e) {
-            System.out.println("Erro ao deletar tipocontato" + e);
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                throw new SQLIntegrityConstraintViolationException();
+            }
+            System.out.println("Erro ao deletar tipocontato: " + e);
         } finally {
             ConnectionFactory.close(conn, ps, rs);
         }
