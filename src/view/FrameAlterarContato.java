@@ -26,6 +26,7 @@ public class FrameAlterarContato extends javax.swing.JDialog {
     
     Contato contato;
     List<Telefone> telefones;
+    List<TipoContato> tipos;
 
     /**
      * Creates new form FrameAlterarContato
@@ -43,7 +44,11 @@ public class FrameAlterarContato extends javax.swing.JDialog {
         jDateChooser1.setDate(contato.getDataNascimento());
         atualizarTabela();
         atualizarCbBox();
-        jComboBox1.setSelectedIndex(contato.getTipoContato().getId() - 1);
+        for (int i = 0; i < jComboBox1.getModel().getSize(); i++) {
+            if (tipos.get(i).getNome().equals(contato.getTipoContato().getNome())) {
+                jComboBox1.setSelectedIndex(i);
+            }
+        }
     }
 
     /**
@@ -312,7 +317,7 @@ public class FrameAlterarContato extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(kGradientPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 25, Short.MAX_VALUE))
+                .addGap(0, 3, Short.MAX_VALUE))
         );
 
         pack();
@@ -380,6 +385,7 @@ public class FrameAlterarContato extends javax.swing.JDialog {
         try {
             TipoContatoDAO tipoDao = new TipoContatoDAOImpl();
             List<TipoContato> tiposList = tipoDao.listAll();
+            this.tipos = tiposList;
             Object[] tipos = new Object[tiposList.size()];
             int i = 0;
             for (TipoContato tipo : tiposList) {

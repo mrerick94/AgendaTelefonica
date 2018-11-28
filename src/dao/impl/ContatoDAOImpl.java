@@ -104,11 +104,7 @@ public class ContatoDAOImpl implements dao.ContatoDAO {
             TelefoneDAO telDao = new TelefoneDAOImpl();
             telDao.deletePorContato(contato.getId());
             for (Telefone telefone : contato.getTelefones()) {
-                if (telefone.getId() != null) {
-                    telDao.update(telefone);
-                } else {
                     telDao.insert(telefone);
-                }
             }
         } catch (IOException | ClassNotFoundException | SQLException e) {
             System.out.println("Contato não pôde ser atualizado" + e);
